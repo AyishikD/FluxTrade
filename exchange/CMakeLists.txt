@@ -14,4 +14,5 @@ target_link_libraries(exchange PUBLIC
     gateway
     risk
     matching
+    persistence
 )

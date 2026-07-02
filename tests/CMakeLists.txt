@@ -22,6 +22,9 @@ add_executable(flux_tests
     risk/risk_engine_tests.cpp
     gateway/gateway_tests.cpp
     exchange/exchange_tests.cpp
+    persistence/wal_tests.cpp
+    persistence/snapshot_tests.cpp
+    persistence/replay_tests.cpp
 )
 
 target_link_libraries(flux_tests 
@@ -35,6 +38,7 @@ target_link_libraries(flux_tests
         risk
         gateway
         exchange
+        persistence
         flux_compile_options
 )
 

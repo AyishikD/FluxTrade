@@ -9,6 +9,8 @@
 #include <atomic>
 #include <thread>
 #include <chrono>
+#include <persistence/memory_journal.hpp>
+#include <persistence/disk_journal.hpp>
 
 namespace fluxtrade {
 
@@ -23,7 +25,11 @@ public:
         : symbol_id_(symbol_id)
         , inbound_queue_(inbound_queue)
         , outbound_queue_(outbound_queue)
-        , core_id_(core_id) {}
+        , core_id_(core_id)
+    {
+        std::string dir = "wal/symbol_" + std::to_string(symbol_id);
+        disk_journal_ = std::make_unique<persistence::DiskJournal>(dir, persistence::FlushPolicy::Batch);
+    }
 
     ~EngineManager() {
         stop();
@@ -35,12 +41,14 @@ public:
     void start() noexcept {
         if (running_.load(std::memory_order_relaxed)) return;
         running_.store(true, std::memory_order_relaxed);
+        disk_journal_->start(journal_queue_, core_id_ > 0 ? core_id_ + 1 : 0);
         thread_ = std::thread([this]() { run(); });
     }
 
     void stop() noexcept {
         if (!running_.load(std::memory_order_relaxed)) return;
         running_.store(false, std::memory_order_relaxed);
+        disk_journal_->stop();
         if (thread_.joinable()) {
             thread_.join();
         }
@@ -85,7 +93,17 @@ private:
         auto r_res = risk_engine_.validate(r_ctx, trace);
 
         if (r_res.has_value()) {
-            // Risk validation passed! Forward command to the Order Book / Matching Engine
+            // Risk validation passed! Append to WAL
+            persistence::MemoryJournal::append(
+                journal_queue_,
+                cmd.sequence,
+                cmd.timestamp,
+                static_cast<uint16_t>(cmd.type),
+                &cmd,
+                sizeof(OrderCommand)
+            );
+
+            // Forward command to the Order Book / Matching Engine
             if (cmd.type == CommandType::NewOrder) {
                 Order order{
                     .order_id = OrderId(cmd.client_order_id),
@@ -180,6 +198,8 @@ private:
     [[maybe_unused]] uint32_t symbol_id_;
     RingBuffer<OrderCommand, 4096>& inbound_queue_;
     RingBuffer<OutboundReport, 4096>& outbound_queue_;
+    RingBuffer<persistence::LogEntry, 65536> journal_queue_;
+    std::unique_ptr<persistence::DiskJournal> disk_journal_;
     uint32_t core_id_;
     
     std::atomic<bool> running_{false};

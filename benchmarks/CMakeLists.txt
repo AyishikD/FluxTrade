@@ -83,6 +83,21 @@ target_link_libraries(risk_engine_benchmarks
         flux_compile_options
 )
 
+add_executable(persistence_benchmarks
+    persistence/persistence_benchmarks.cpp
+)
+
+target_link_libraries(persistence_benchmarks
+    PRIVATE
+        benchmark::benchmark
+        benchmark::benchmark_main
+        common
+        domain
+        matching
+        persistence
+        flux_compile_options
+)
+
 add_executable(gateway_benchmarks
     gateway/gateway_benchmark.cpp
 )

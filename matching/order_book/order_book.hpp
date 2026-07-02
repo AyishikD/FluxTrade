@@ -6,6 +6,10 @@
 #include <matching/order_book/order_lookup.hpp>
 
 namespace fluxtrade {
+namespace persistence {
+    class SnapshotWriter;
+    class SnapshotReader;
+}
 
 // Interface to capture book mutations for logs, replay, and market data publishers
 class IOrderBookListener {
@@ -20,6 +24,9 @@ public:
 
 class LimitOrderBook {
 public:
+    friend class persistence::SnapshotWriter;
+    friend class persistence::SnapshotReader;
+
     explicit LimitOrderBook(IOrderBookListener* listener = nullptr) noexcept;
     ~LimitOrderBook() = default;
 
