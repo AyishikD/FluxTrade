@@ -1,0 +1,3 @@
+add_library(scheduler INTERFACE)
+target_include_directories(scheduler INTERFACE include)
+target_link_libraries(scheduler INTERFACE common)

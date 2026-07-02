@@ -1,0 +1,3 @@
+add_library(monitoring INTERFACE)
+target_include_directories(monitoring INTERFACE include)
+target_link_libraries(monitoring INTERFACE common metrics)

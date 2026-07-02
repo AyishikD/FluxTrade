@@ -1,0 +1,39 @@
+# CMake Build Directories
+/build/
+/build_release/
+/build_debug/
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+cmake_install.cmake
+install_manifest.txt
+Makefile
+/*.cbp
+
+# Compiled Binaries & Libraries
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+
+# IDEs & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+.clang-format.swp
+
+# Testing & Coverage
+*.gcda
+*.gcno
+*.gcov
+/tests/test_detail.xml
+
+# System / Temporary files
+.gemini/
+*.log
+tmp/

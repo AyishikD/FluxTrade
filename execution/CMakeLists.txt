@@ -1,0 +1,3 @@
+add_library(execution INTERFACE)
+target_include_directories(execution INTERFACE include)
+target_link_libraries(execution INTERFACE common orderbook)

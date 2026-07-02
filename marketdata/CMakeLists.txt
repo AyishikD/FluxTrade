@@ -1,0 +1,3 @@
+add_library(marketdata INTERFACE)
+target_include_directories(marketdata INTERFACE include)
+target_link_libraries(marketdata INTERFACE common orderbook)
