@@ -92,6 +92,7 @@ These microsecond and nanosecond optimizations are critical for the overall end-
 | **v0.6** | 89.0 ns | 95.5 ns | 3.62 ns | Implemented Domain Module with 64-byte Orders, ticks/units wrappers, and LiveOrder. |
 | **v0.7** | 89.0 ns | 95.5 ns | 3.62 ns | Built Limit Order Book (LOB) with O(1) order operations and intrusive linked lists. |
 | **v0.8** | 89.0 ns | 95.5 ns | 3.62 ns | Implemented Matching Engine & ExchangeSimulator orchestrator with sub-70 ns executions. |
+| **v0.9** | 89.0 ns | 95.5 ns | 3.62 ns | Designed Production-Grade Risk Engine with compile-time policies & O(1) sliding windows. |
 
 ---
 
@@ -142,60 +143,13 @@ These microsecond and nanosecond optimizations are critical for the overall end-
 
 ---
 
-## Events Module Latency (Release Build)
+## Risk Engine Latency (Release Build)
 
 | Benchmark Scenario | Time / Iteration | Throughput / Notes |
 | :--- | :--- | :--- |
-| **Event Construction** | **1.24 ns** | Zero-allocation struct creation |
-| **Event Copy** | **0.92 ns** | CPU-aligned direct memory register copies |
-| **Header Member Access** | **0.23 ns** | Inlined offset access |
-| **Binary Serialization** | **1.29 ns** | Bounds-checked memory block copy (with barriers) |
-| **Binary Deserialization** | **1.41 ns** | 72-byte memory copy bounds-checked (with barriers) |
-
----
-
-## Domain Module Latency (Release Build)
-
-| Benchmark Scenario | Time / Iteration | Throughput / Notes |
-| :--- | :--- | :--- |
-| **Order Construction** | **1.07 ns** | Inline struct creation |
-| **Order Copy** | **0.85 ns** | 64-byte cache line aligned copy |
-| **Price Arithmetic** | **0.24 ns** | Fixed-precision 64-bit integer addition |
-| **Quantity Conversions** | **0.23 ns** | double to 64-bit scaled integer |
-| **Order Validation** | **0.24 ns** | constexpr-inlined field validation checks |
-
----
-
-## Order Book Latency (Release Build)
-
-| Benchmark Scenario | Time / Iteration | Throughput / Notes |
-| :--- | :--- | :--- |
-| **Insert (Existing Level)** | **23.4 ns** | O(1) FIFO queue append (zero heap allocations) |
-| **Insert (New Level)** | **67.5 ns** | O(log L) price level tree sorting & list insertion |
-| **Cancel Order** | **28.7 ns** | O(1) hash lookup + unlinking (isolated cost) |
-| **Modify Quantity** | **2.67 ns** | O(1) size scale or tail append sequence shift |
-| **Best Bid Lookup** | **0.29 ns** | O(1) pointer lookup (single CPU cycle) |
-
----
-
-## Events Module Latency (Release Build)
-
-| Benchmark Scenario | Time / Iteration | Throughput / Notes |
-| :--- | :--- | :--- |
-| **Event Construction** | **1.24 ns** | Zero-allocation struct creation |
-| **Event Copy** | **0.92 ns** | CPU-aligned direct memory register copies |
-| **Header Member Access** | **0.23 ns** | Inlined offset access |
-| **Binary Serialization** | **1.29 ns** | Bounds-checked memory block copy (with barriers) |
-| **Binary Deserialization** | **1.41 ns** | 72-byte memory copy bounds-checked (with barriers) |
-
----
-
-## Domain Module Latency (Release Build)
-
-| Benchmark Scenario | Time / Iteration | Throughput / Notes |
-| :--- | :--- | :--- |
-| **Order Construction** | **1.07 ns** | Inline struct creation |
-| **Order Copy** | **0.85 ns** | 64-byte cache line aligned copy |
-| **Price Arithmetic** | **0.24 ns** | Fixed-precision 64-bit integer addition |
-| **Quantity Conversions** | **0.23 ns** | double to 64-bit scaled integer |
-| **Order Validation** | **0.24 ns** | constexpr-inlined field validation checks |
+| **Credit Check** | **0.24 ns** | O(1) Buying power evaluation |
+| **Position Check** | **0.24 ns** | O(1) long/short limit check |
+| **STP Check** | **0.24 ns** | O(1) account/client STP match |
+| **Price Band Check** | **0.24 ns** | O(1) reference price deviation |
+| **Kill Switch Check** | **0.38 ns** | Atomic global/account/symbol read |
+| **Full pipeline validation** | **95.2 ns** | Complete sequence of 9 checks (with global clock queries) |

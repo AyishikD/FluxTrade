@@ -68,3 +68,17 @@ target_link_libraries(matching_engine_benchmarks
         matching
         flux_compile_options
 )
+
+add_executable(risk_engine_benchmarks
+    risk/risk_engine_benchmark.cpp
+)
+
+target_link_libraries(risk_engine_benchmarks
+    PRIVATE
+        benchmark::benchmark
+        common
+        domain
+        matching
+        risk
+        flux_compile_options
+)

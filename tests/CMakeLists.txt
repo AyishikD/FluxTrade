@@ -19,6 +19,7 @@ add_executable(flux_tests
     domain/domain_tests.cpp
     matching/order_book_tests.cpp
     matching/matching_engine_tests.cpp
+    risk/risk_engine_tests.cpp
 )
 
 target_link_libraries(flux_tests 
@@ -29,6 +30,7 @@ target_link_libraries(flux_tests
         events
         domain
         matching
+        risk
         flux_compile_options
 )
 
