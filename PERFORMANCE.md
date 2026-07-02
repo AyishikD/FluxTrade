@@ -93,6 +93,18 @@ These microsecond and nanosecond optimizations are critical for the overall end-
 | **v0.7** | 89.0 ns | 95.5 ns | 3.62 ns | Built Limit Order Book (LOB) with O(1) order operations and intrusive linked lists. |
 | **v0.8** | 89.0 ns | 95.5 ns | 3.62 ns | Implemented Matching Engine & ExchangeSimulator orchestrator with sub-70 ns executions. |
 | **v0.9** | 89.0 ns | 95.5 ns | 3.62 ns | Designed Production-Grade Risk Engine with compile-time policies & O(1) sliding windows. |
+| **v1.0** | 89.0 ns | 95.5 ns | 3.62 ns | Implemented Gateway and Exchange Core with TCP socket transports, Dispatcher, and core-pinning. |
+
+---
+
+## Gateway & Exchange Latency (Release Build)
+
+| Benchmark Scenario | Time / Iteration | Throughput / Notes |
+| :--- | :--- | :--- |
+| **Packet Encode** | **0.23 ns** | Fixed-size trivially copyable packer |
+| **Packet Decode** | **0.24 ns** | Zero-allocation framing buffer reader |
+| **Sequence Assignment** | **1.61 ns** | Atomic monotonic ticket fetch |
+| **Dispatcher Routing** | **4.23 ns** | Core dispatch slot lookup |
 
 ---
 

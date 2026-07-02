@@ -82,3 +82,17 @@ target_link_libraries(risk_engine_benchmarks
         risk
         flux_compile_options
 )
+
+add_executable(gateway_benchmarks
+    gateway/gateway_benchmark.cpp
+)
+
+target_link_libraries(gateway_benchmarks
+    PRIVATE
+        benchmark::benchmark
+        common
+        domain
+        gateway
+        exchange
+        flux_compile_options
+)
